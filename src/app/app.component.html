@@ -1,0 +1,353 @@
+<div id="borders"></div>
+
+<div id="main-container">
+  <div id="details">
+    <h1 id="title">
+      Devicon
+      <span
+        ><a href="https://github.com/devicons/devicon/releases">{{
+          version
+        }}</a></span
+      >
+    </h1>
+    <h2>
+      Devicon is a set of icons representing programming languages, designing,
+      and development tools. You can use it as a font or directly copy/paste the
+      SVG code into your project.
+    </h2>
+    <i
+      >*Please read the legal conditions of using the logos here at the bottom
+      of this header</i
+    >
+    <h3>(Super) Quick Setup</h3>
+    <h5>
+      First select an icon on the right, then select the version below and
+      copy/paste the code into your project.
+    </h5>
+
+    <div id="versions">
+      <div class="version-container">
+        <div class="version">
+          Font versions
+          <span>
+            <img
+              src="../assets/img/color_wheel.png"
+              class="colorPicker"
+              (click)="toggleFontColorPickerMenu()"
+            />
+            <span
+              *ngIf="showFontColorPicker"
+              class="colorPickerMenu"
+              id="fontColorPickerMenu"
+              style="display: block"
+            >
+              <div>
+                <input
+                  type="color"
+                  value="#60be86"
+                  [(ngModel)]="fontBackground"
+                />
+                Background Color
+              </div>
+              <div>
+                <input
+                  type="checkbox"
+                  id="checkboardInputFont"
+                  class="checkerboardInput"
+                  [(ngModel)]="fontDisplayCheckerboard"
+                />
+                <label for="checkboardInputFont">Checkerboard</label>
+              </div>
+              <button
+                class="colorPickerBtn"
+                (click)="toggleFontColorPickerMenu()"
+              >
+                Close
+              </button>
+              <button
+                class="colorPickerBtn"
+                (click)="
+                  fontBackground = defaultBackground;
+                  fontDisplayCheckerboard = false;
+                  toggleFontColorPickerMenu()
+                "
+              >
+                Reset
+              </button>
+            </span>
+          </span>
+        </div>
+
+        <p>
+          Place this in your header (once per HTML file)
+          <span>
+            <img
+              src="../assets/img/copy.svg"
+              class="copyBtn"
+              (click)="copyCode($event, 'headerLinkCode')"
+            />
+            <span class="tooltip"></span>
+          </span>
+        </p>
+        <div id="headerLinkCode">
+          &lt;link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/devicons/devicon@{{
+            version
+          }}/devicon.min.css"&gt;
+        </div>
+
+        <div class="icon-options">
+          <ng-container
+            *ngFor="let fontVersion of selectedIcon.font; let i = index"
+          >
+            <div
+              *ngFor="let j of [0, 1]"
+              (click)="selectFont(fontVersion, i, j, !!j)"
+              [ngClass]="{
+                'selected-version':
+                  i === selectedFontIndexI && j === selectedFontIndexJ
+              }"
+              [style.background-color]="fontBackground"
+              class="font-container"
+            >
+              <img
+                src="../assets/img/checkerboard.png"
+                [style.visibility]="
+                  fontDisplayCheckerboard ? 'visible' : 'hidden'
+                "
+              />
+              <i
+                class="devicon-{{ selectedIcon.name }}-{{ fontVersion }}{{
+                  j === 1 ? ' colored' : null
+                }}"
+              ></i>
+            </div>
+          </ng-container>
+        </div>
+        <p>
+          Place this in your body
+          <span>
+            <img
+              src="../assets/img/copy.svg"
+              class="copyBtn"
+              (click)="copyCode($event, 'iconClassCode')"
+            />
+            <span class="tooltip"></span>
+          </span>
+        </p>
+        <div id="iconClassCode">
+          &lt;i class="devicon-{{ selectedIcon.name }}-{{ selectedIconFont
+          }}{{ colored ? " colored" : null }}"&gt;&lt;/i&gt;<br />
+        </div>
+        <p>
+          <i
+            >*To change the size, change the &lt;i&gt;'s
+            <code>`font-size`</code>.</i
+          >
+        </p>
+      </div>
+      <div class="version-container">
+        <div class="version">
+          SVG versions
+          <span>
+            <img
+              src="../assets/img/color_wheel.png"
+              class="colorPicker"
+              (click)="toggleSvgColorPickerMenu()"
+            />
+            <span
+              *ngIf="showSvgColorPicker"
+              class="colorPickerMenu"
+              id="svgColorPickerMenu"
+              style="display: block"
+            >
+              <div>
+                <input
+                  type="color"
+                  value="#60be86"
+                  [(ngModel)]="svgBackground"
+                />
+                Background Color
+              </div>
+              <div>
+                <input
+                  type="checkbox"
+                  id="checkboardInputSvg"
+                  class="checkerboardInput"
+                  [(ngModel)]="svgDisplayCheckerboard"
+                />
+                <label for="checkboardInputSvg">Checkerboard</label>
+              </div>
+              <button
+                class="colorPickerBtn"
+                (click)="toggleSvgColorPickerMenu()"
+              >
+                Close
+              </button>
+              <button
+                class="colorPickerBtn"
+                (click)="
+                  svgBackground = defaultBackground;
+                  svgDisplayCheckerboard = false;
+                  toggleSvgColorPickerMenu()
+                "
+              >
+                Reset
+              </button>
+            </span>
+          </span>
+        </div>
+        <div class="icon-options">
+          <div
+            *ngFor="let svgVersion of selectedIcon.svg; let i = index"
+            (click)="selectSvg(svgVersion, i)"
+            [ngClass]="{ 'selected-version': i === selectedSvgIndex }"
+            class="font-container"
+            [style.background-color]="svgBackground"
+            style="height: 96px"
+          >
+            <img
+              src="../assets/img/checkerboard.png"
+              [style.visibility]="svgDisplayCheckerboard ? 'visible' : 'hidden'"
+            />
+            <img
+              class="svgLogo"
+              src="{{
+                'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/' +
+                  selectedIcon.name +
+                  '/' +
+                  selectedIcon.name +
+                  '-' +
+                  svgVersion +
+                  '.svg'
+              }}"
+            />
+          </div>
+        </div>
+        <p>
+          Using &lt;img&gt; element
+          <span>
+            <img
+              src="../assets/img/copy.svg"
+              class="copyBtn"
+              (click)="copyCode($event, 'imgCode')"
+            />
+            <span class="tooltip"></span>
+          </span>
+        </p>
+        <div id="imgCode">
+          &lt;img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/{{
+            selectedIcon.name
+          }}/{{ selectedIcon.name }}-{{
+            selectedIcon.svg[selectedSvgIndex]
+          }}.svg" /&gt;<br />
+        </div>
+        <p>
+          <i
+            >*To change the size, change the &lt;img&gt;'s
+            <code>`height`</code> and <code>`width`</code>.</i
+          >
+        </p>
+        <br />
+        <p>
+          Using Pure SVG
+          <span>
+            <img
+              src="../assets/img/copy.svg"
+              class="copyBtn"
+              (click)="copyCode($event, 'svgCode')"
+            />
+            <span class="tooltip"></span>
+          </span>
+        </p>
+        <div id="svgCode">
+          &lt;svg viewBox="0 0 128 128"&gt;<br />
+          <div>{{ selectedSvgIcon }}</div>
+          &lt;/svg&gt;
+        </div>
+        <p>
+          <i
+            >*To change the size, change the &lt;svg&gt;'s
+            <code>`height`</code> and <code>`width`</code>.</i
+          >
+        </p>
+      </div>
+    </div>
+
+    <h3>GitHub repository</h3>
+    <h5>
+      If you prefer a local install, you can download all the files on the
+      GitHub repository.
+    </h5>
+    <div class="buttonLink">
+      <a href="https://github.com/devicons/devicon/archive/master.zip"
+        ><i class="devicon-github-original"></i>DOWNLOAD</a
+      >
+    </div>
+    <div class="buttonLink">
+      <a href="https://github.com/devicons/devicon/" target="blank"
+        ><i class="devicon-github-original"></i>GO TO THE REPOSITORY</a
+      >
+    </div>
+    <div class="buttonLink">
+      <a
+        href="https://github.com/devicons/devicon/blob/master/CONTRIBUTING.md"
+        target="blank"
+        ><i class="devicon-github-original"></i>CONTRIBUTE</a
+      >
+    </div>
+    <div class="buttonLink">
+      <a href="https://discord.gg/hScy8KWACQ" target="blank"
+        ><i class="discord-logo"></i>DISCORD SERVER</a
+      >
+    </div>
+
+    <h3>Contact</h3>
+    <h5>
+      If you have any legal concerns regarding copyrights or want to report an
+      abuse, please reach out to us at
+      <b><a href="mailto:info@devicon.dev">info@devicon.dev</a></b
+      >. Any code/logo contributions should be made through our GitHub
+      repository listed above.
+    </h5>
+
+    <footer>
+      Originally created by <a href="https://github.com/konpa">Konpa</a> (under
+      <a href="https://github.com/devicons/devicon/blob/master/LICENSE"
+        >MIT License</a
+      >) and <br />
+      supported by various
+      <a href="https://github.com/devicons/devicon/graphs/contributors"
+        >contributors</a
+      >.<br />
+      Copyright &copy; 2015 <a href="https://github.com/konpa">Konpa</a><br />
+      <br />
+      Final font build with <a href="https://icomoon.io/">Icomoon</a><br />
+      <br />
+      <i
+        >*All product names, logos, and brandsare property of their respective
+        owners. All company, product and service names used in this website are
+        for identification purposes only. Usage of these names, logos, and
+        brands does not imply endorsement of Devicon or its members. All
+        icons/SVGs in this project are not monetized in anyway. It is up to the
+        user to use the logo properly according to the company/group's brand
+        policy. Usage of this site or any icons/SVGs from Devicon means
+        acknowledgement of these conditions.</i
+      >
+    </footer>
+  </div>
+
+  <div id="iconDisplay">
+    <div id="search">
+      <input type="text" placeholder="Search for icons" [(ngModel)]="search" />
+    </div>
+    <div id="grid">
+      <div class="box" *ngFor="let icon of icons | filter : search">
+        <div [ngClass]="{ selected: icon.selected }" (click)="selectIcon(icon)">
+          <i class="icon devicon-{{ icon.main }}"></i>
+          <h1 class="name">{{ icon.name }}</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
