@@ -23,14 +23,11 @@ type iconHtml = {
   svg: string[];
 };
 
-// Determination of the latest release tagging
-// which is used for showing in the header of the page
-// as well as for CDN links
 const getLatestVersion = fetch(
   `https://api.github.com/repos/devicons/devicon/tags`
 )
-  .then((response: any) => response.json())
-  .then((data: any) => data[0].name)
+  .then((response) => response.json())
+  .then((data) => data[0].name)
   .catch((err) => console.error(err));
 
 const dataBaseUrl: string =
@@ -38,9 +35,7 @@ const dataBaseUrl: string =
 let iconArray: iconHtml[] = [];
 
 const initIcons: Promise<iconHtml[]> = fetch(`${dataBaseUrl}/devicon.json`)
-  .then((response: Response) => {
-    return response.json();
-  })
+  .then((response) => response.json())
   .then((icons: icon[]) => {
     icons.forEach((iconData: icon) => {
       const icon = {
@@ -106,13 +101,6 @@ function displayTooltop(element: any, message: string): void {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  /*
-  Can't get ViewChild to work. Using default element selectors for now.
-  @ViewChild('headerLinkCode', {static: false}) headerLinkCode!: ElementRef;
-  @ViewChild('iconClassCode', {static: false}) iconClassCode!: ElementRef;
-  @ViewChild('imgCode', {static: false}) imgCode!: ElementRef;
-  @ViewChild('svgCode', {static: false}) svgCode!: ElementRef;
-  */
   title: string = 'devicon';
 
   // background color related stuff
@@ -157,7 +145,6 @@ export class AppComponent implements OnInit {
 
     initIcons.then((data) => {
       this.icons = data;
-      this.selectedIcon = data[0];
       this.selectedIconFont = data[0].font[0];
       this.selectSvg(data[0].svg[0], 0);
     });
@@ -171,7 +158,6 @@ export class AppComponent implements OnInit {
   }
 
   copyCode(event: MouseEvent, idName: string) {
-    //console.log(this.iconClassCode.nativeElement.textContent);
     const code = document.querySelector(`#${idName}`)!.textContent as string;
     navigator.clipboard
       .writeText(code)
