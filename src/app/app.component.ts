@@ -42,7 +42,7 @@ const initIcons: Promise<iconHtml[]> = fetch(`${dataBaseUrl}/devicon.json`)
         name: iconData.name,
         main: `${iconData.name}-${iconData.versions.font[0]}`,
         svg: iconData.versions.svg,
-        font: iconData.versions.font
+        font: iconData.versions.font,
       });
     });
     return iconArray;
@@ -104,7 +104,7 @@ export class AppComponent implements OnInit {
     name: 'adonisjs',
     main: 'adonisjs-original',
     svg: ['original', 'original-wordmark'],
-    font: ['original', 'original-wordmark']
+    font: ['original', 'original-wordmark'],
   };
 
   selectedIconFont: string = '';
