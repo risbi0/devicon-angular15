@@ -2,25 +2,47 @@ import { Component } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+type icon = {
+  name: string;
+  tags: string[];
+  color: string;
+  aliases: {
+    base: string;
+    alias: string;
+  }[];
+  versions: {
+    font: string[];
+    svg: string[];
+  };
+};
+
+type iconHtml = {
+  name: string;
+  main: string;
+  font: string[];
+  svg: string[];
+};
+
 // Determination of the latest release tagging
 // which is used for showing in the header of the page
 // as well as for CDN links
-const gitHubPath = 'devicons/devicon';
-let iconArray: any = [];
 const getLatestVersion = fetch(
-  `https://api.github.com/repos/${gitHubPath}/tags`
+  `https://api.github.com/repos/devicons/devicon/tags`
 )
   .then((response: any) => response.json())
   .then((data: any) => data[0].name)
   .catch((err) => console.error(err));
 
-const dataBaseUrl = 'https://cdn.jsdelivr.net/gh/devicons/devicon@master';
-const initIcons = fetch(`${dataBaseUrl}/devicon.json`)
-  .then((response: any) => {
+const dataBaseUrl: string =
+  'https://cdn.jsdelivr.net/gh/devicons/devicon@master';
+let iconArray: iconHtml[] = [];
+
+const initIcons: Promise<iconHtml[]> = fetch(`${dataBaseUrl}/devicon.json`)
+  .then((response: Response) => {
     return response.json();
   })
-  .then((icons: any) => {
-    icons.forEach((iconData: any) => {
+  .then((icons: icon[]) => {
+    icons.forEach((iconData: icon) => {
       const icon = {
         name: iconData.name,
         svg: iconData.versions.svg,
@@ -57,7 +79,7 @@ const initIcons = fetch(`${dataBaseUrl}/devicon.json`)
     return iconArray;
   });
 
-function displayTooltop(element: any, message: string) {
+function displayTooltop(element: any, message: string): void {
   const tooltip = element.parentElement!.querySelectorAll('.tooltip')[0];
   tooltip.textContent = message;
   // reset opacity (for some reason, default opacity is null)
@@ -66,7 +88,7 @@ function displayTooltop(element: any, message: string) {
 
   // create fade out effect after 2 sec
   setTimeout(() => {
-    let count = 10;
+    let count: number = 10;
     let intervalObj: any;
     intervalObj = setInterval(() => {
       tooltip.style.opacity -= 0.1;
@@ -92,30 +114,33 @@ export class AppComponent implements OnInit {
   @ViewChild('svgCode', {static: false}) svgCode!: ElementRef;
   */
   title: string = 'devicon';
+
   // background color related stuff
   // default is the default site background color
   defaultBackground: string = '#60BE86';
   fontBackground: string = '#60BE86';
   svgBackground: string = '#60BE86';
+
   // whether to display the checkerboard img in the background
   // for the font and svg respectively
   fontDisplayCheckerboard: boolean = false;
   svgDisplayCheckerboard: boolean = false;
 
-  version: any = 'original';
+  version: string = 'original';
   icons: any;
-  colored: boolean | undefined;
+  colored: boolean = false;
   showFontColorPicker: boolean = false;
   showSvgColorPicker: boolean = false;
 
   // explicitly initialize default selected icon
-  selectedIcon: any = {
+  selectedIcon: iconHtml = {
     name: 'adonisjs',
     svg: ['original', 'original-wordmark'],
     font: ['original', 'original-wordmark'],
     main: 'adonisjs-original',
   };
-  selectedIconFont: string | undefined;
+
+  selectedIconFont: string = '';
   selectedSvgIcon: string = '';
   selectedFontIndexI: number = 0;
   selectedFontIndexJ: number = 0;
@@ -186,13 +211,12 @@ export class AppComponent implements OnInit {
       );
   }
 
-  selectIcon(icon: any) {
+  selectIcon(icon: iconHtml) {
     this.selectedIcon = icon;
     this.selectedIconFont = icon.font[0];
     this.selectedFontIndexI = 0;
     this.selectedFontIndexJ = 0;
     this.selectSvg(icon.svg[0], 0);
-
     // reset color
     this.fontBackground = this.defaultBackground;
     this.svgBackground = this.defaultBackground;
