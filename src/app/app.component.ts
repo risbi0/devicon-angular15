@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
@@ -38,38 +38,12 @@ const initIcons: Promise<iconHtml[]> = fetch(`${dataBaseUrl}/devicon.json`)
   .then((response) => response.json())
   .then((icons: icon[]) => {
     icons.forEach((iconData: icon) => {
-      const icon = {
+      iconArray.push({
         name: iconData.name,
+        main: `${iconData.name}-${iconData.versions.font[0]}`,
         svg: iconData.versions.svg,
-        font: iconData.versions.font,
-        main: '',
-      };
-
-      // Loop through devicon.json icons
-      for (let i = 0; i < iconData.versions.font.length; i++) {
-        // Store all versions that should become main in order
-        const mainVersionsArray = [
-          'plain',
-          'line',
-          'original',
-          'plain-wordmark',
-          'line-wordmark',
-          'original-wordmark',
-        ];
-
-        // Loop through mainVersionsArray
-        for (let j = 0; j < mainVersionsArray.length; j++) {
-          // Check if icon version can be 'main', if not continue, if yes break the loops
-          if (
-            iconData.name + iconData.versions.font[i] ==
-            iconData.name + mainVersionsArray[j]
-          ) {
-            icon.main = iconData.name + '-' + iconData.versions.font[i];
-            i = 99999; // break first loop (and second)
-          }
-        }
-      }
-      iconArray.push(icon);
+        font: iconData.versions.font
+      });
     });
     return iconArray;
   });
@@ -101,6 +75,11 @@ function displayTooltip(element: any, message: string): void {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  @ViewChild('headerLinkCode') headerLinkCode!: ElementRef;
+  @ViewChild('iconClassCode') iconClassCode!: ElementRef;
+  @ViewChild('imgCode') imgCode!: ElementRef;
+  @ViewChild('svgCode') svgCode!: ElementRef;
+
   title: string = 'devicon';
 
   // background color related stuff
@@ -123,9 +102,9 @@ export class AppComponent implements OnInit {
   // explicitly initialize default selected icon
   selectedIcon: iconHtml = {
     name: 'adonisjs',
-    svg: ['original', 'original-wordmark'],
-    font: ['original', 'original-wordmark'],
     main: 'adonisjs-original',
+    svg: ['original', 'original-wordmark'],
+    font: ['original', 'original-wordmark']
   };
 
   selectedIconFont: string = '';
@@ -158,7 +137,8 @@ export class AppComponent implements OnInit {
   }
 
   copyCode(event: MouseEvent, idName: string) {
-    const code = document.querySelector(`#${idName}`)!.textContent as string;
+    // @ts-ignore
+    const code = this[idName].nativeElement.textContent as string;
     navigator.clipboard
       .writeText(code)
       .then(() => {
