@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { OnInit, Pipe, PipeTransform } from '@angular/core';
+import { OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 // Determination of the latest release tagging
@@ -196,19 +196,5 @@ export class AppComponent implements OnInit {
     // reset color
     this.fontBackground = this.defaultBackground;
     this.svgBackground = this.defaultBackground;
-  }
-}
-
-@Pipe({
-  name: 'filter',
-})
-export class FilterPipe implements PipeTransform {
-  transform(icons: any[], search: string): any[] {
-    if (!icons || !search) {
-      return icons;
-    }
-    return icons.filter((item) =>
-      item.name.toLowerCase().includes(search.toLowerCase())
-    );
   }
 }
