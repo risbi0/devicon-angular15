@@ -216,7 +216,7 @@ export class AppComponent implements OnInit {
     this.selectedIconFont = icon.font[0];
     this.selectedFontIndexI = 0;
     this.selectedFontIndexJ = 0;
-    this.colored = false
+    this.colored = false;
     this.selectSvg(icon.svg[0], 0);
     // reset color
     this.fontBackground = this.defaultBackground;

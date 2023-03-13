@@ -1,8 +1,9 @@
 import { FilterPipe } from './filter.pipe';
 
 describe('FilterPipe', () => {
-  it('create an instance', () => {
+  it('should filter', () => {
     const pipe = new FilterPipe();
-    expect(pipe).toBeTruthy();
+    const mockData = [{ name: 'react' }, { name: 'angular' }, { name: 'vue' }];
+    expect(pipe.transform(mockData, 'angular')).toEqual([{ name: 'angular' }]);
   });
 });
