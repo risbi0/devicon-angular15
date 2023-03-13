@@ -74,7 +74,7 @@ const initIcons: Promise<iconHtml[]> = fetch(`${dataBaseUrl}/devicon.json`)
     return iconArray;
   });
 
-function displayTooltop(element: any, message: string): void {
+function displayTooltip(element: any, message: string): void {
   const tooltip = element.parentElement!.querySelectorAll('.tooltip')[0];
   tooltip.textContent = message;
   // reset opacity (for some reason, default opacity is null)
@@ -162,7 +162,7 @@ export class AppComponent implements OnInit {
     navigator.clipboard
       .writeText(code)
       .then(() => {
-        displayTooltop(event.target, 'Copied');
+        displayTooltip(event.target, 'Copied');
       })
       .catch((err) => {
         console.error('Error copying text', err);
